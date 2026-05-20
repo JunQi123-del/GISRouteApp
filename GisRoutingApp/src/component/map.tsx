@@ -8,8 +8,8 @@ export default function Map(){
     const [isSatellite, setIsSatellite] = useState(false)
 
     const STYLES = {
-     streets: 'https://api.maptiler.com/maps/streets-v2/style.json?key=YOUR_API_KEY_HERE',
-        satellite: 'https://api.maptiler.com/maps/hybrid/style.json?key=YOUR_API_KEY_HERE',
+        streets: 'https://api.maptiler.com/maps/streets-v2/style.json?key=5lp75iO68NFWKlAsQR3c',
+        satellite: 'https://api.maptiler.com/maps/hybrid/style.json?key=5lp75iO68NFWKlAsQR3c',
     }
 
     useEffect(()=>{
@@ -19,7 +19,7 @@ export default function Map(){
             container: mapContainer.current,
             style: 'https://api.maptiler.com/maps/streets-v2/style.json?key=5lp75iO68NFWKlAsQR3c',
             center:[103.8198,1.3521],
-            zoom:11,
+            zoom:12,
         })
 
         // map.current.addControl(new maplibregl.NavigationControl())
