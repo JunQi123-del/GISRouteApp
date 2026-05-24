@@ -1,50 +1,63 @@
-import {useEffect , useRef,useState} from 'react'
-import maplibregl from 'maplibre-gl'
-import styles from './mapType.module.css'
+import { useEffect, useRef, useState } from 'react';
+import maplibregl from 'maplibre-gl';
+import styles from './mapType.module.css';
+import { GeocodingControl } from '@maptiler/geocoding-control/maplibregl';
+import 'maplibre-gl/dist/maplibre-gl.css';
+import '@maptiler/geocoding-control/style.css';
+import { MAPTILER_API_KEY } from '@/Util/constants';
+import { initPlugins, destroyPlugins } from '@/Util/pluginRegistry';
 
-export default function Map(){
-    const mapContainer = useRef<HTMLDivElement>(null)
-    const map = useRef<maplibregl.Map | null>(null)
-    const [isSatellite, setIsSatellite] = useState(false)
+// Import each feature plugin — teammates add new imports here, nothing else changes
+import '@/features/routing';
 
-    const STYLES = {
-        streets: 'https://api.maptiler.com/maps/streets-v2/style.json?key=5lp75iO68NFWKlAsQR3c',
-        satellite: 'https://api.maptiler.com/maps/hybrid/style.json?key=5lp75iO68NFWKlAsQR3c',
-    }
+const STYLES = {
+    streets: `https://api.maptiler.com/maps/streets-v2/style.json?key=${MAPTILER_API_KEY}`,
+    satellite: `https://api.maptiler.com/maps/hybrid/style.json?key=${MAPTILER_API_KEY}`,
+};
 
-    useEffect(()=>{
-        if (map.current || !mapContainer.current) return
+export default function Map() {
+    const mapContainer = useRef<HTMLDivElement>(null);
+    const map = useRef<maplibregl.Map | null>(null);
+    const [isSatellite, setIsSatellite] = useState(false);
+
+    useEffect(() => {
+        if (map.current || !mapContainer.current) return;
 
         map.current = new maplibregl.Map({
             container: mapContainer.current,
-            style: 'https://api.maptiler.com/maps/streets-v2/style.json?key=5lp75iO68NFWKlAsQR3c',
-            center:[103.8198,1.3521],
-            zoom:12,
-        })
+            style: STYLES.streets,
+            center: [103.8198, 1.3521],
+            zoom: 12,
+        });
 
-        // map.current.addControl(new maplibregl.NavigationControl())
+        map.current.addControl(new maplibregl.NavigationControl());
+
+        map.current.addControl(new GeocodingControl({ apiKey: MAPTILER_API_KEY }));
+
+        initPlugins(map.current);
 
         return () => {
-            map.current?.remove()
-            map.current = null
-        }
-    },[])
+            if (map.current) {
+                destroyPlugins(map.current);
+                map.current.remove();
+                map.current = null;
+            }
+        };
+    }, []);
 
     const toggleStyle = () => {
-        if (!map.current) return
-        const newStyle = isSatellite ? STYLES.streets : STYLES.satellite
-        map.current.setStyle(newStyle)
-        setIsSatellite(!isSatellite)
-    }
+        if (!map.current) return;
+        const newStyle = isSatellite ? STYLES.streets : STYLES.satellite;
+        map.current.setStyle(newStyle);
+        setIsSatellite(prev => !prev);
+    };
 
     return (
         <div className={styles.container}>
-            <div ref={mapContainer} className={styles.mapDiv}/>
+            <div ref={mapContainer} className={styles.mapDiv} />
             <button onClick={toggleStyle} className={styles.toggleButton}>
-                {isSatellite ? 'streets':'satellite'}
+                {isSatellite ? 'streets' : 'satellite'}
             </button>
-
         </div>
-    )
-    // return <div ref={mapContainer} style = {{width:'100vw',height:'100vh',display:'block',position:'absolute',top:0,left:0}}/>
+    );
 }
