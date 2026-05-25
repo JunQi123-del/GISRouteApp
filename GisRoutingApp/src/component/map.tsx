@@ -1,14 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import maplibregl from 'maplibre-gl';
 import styles from './mapType.module.css';
-import { GeocodingControl } from '@maptiler/geocoding-control/maplibregl';
 import 'maplibre-gl/dist/maplibre-gl.css';
-import '@maptiler/geocoding-control/style.css';
 import { MAPTILER_API_KEY } from '@/Util/constants';
 import { initPlugins, destroyPlugins } from '@/Util/pluginRegistry';
 
 // Import each feature plugin — teammates add new imports here, nothing else changes
-import '@/features/routing';
+import '@/features/SearchBar';
 
 const STYLES = {
     streets: `https://api.maptiler.com/maps/streets-v2/style.json?key=${MAPTILER_API_KEY}`,
@@ -30,9 +28,6 @@ export default function Map() {
             zoom: 12,
         });
 
-        map.current.addControl(new maplibregl.NavigationControl());
-
-        map.current.addControl(new GeocodingControl({ apiKey: MAPTILER_API_KEY }));
 
         initPlugins(map.current);
 
