@@ -6,7 +6,7 @@ export class SearchBarController implements maplibregl.IControl{
     private container!:HTMLDivElement
 
 
-    onAdd(map: maplibregl.Map): HTMLElement {
+    onAdd(): HTMLElement {
         this.container = document.createElement('div')
         this.container.className = `maplibregl-ctrl ${styles.container}`
 
@@ -18,7 +18,7 @@ export class SearchBarController implements maplibregl.IControl{
         this.container.appendChild(input)
         return this.container
     }
-    onRemove(map: maplibregl.Map): void {
+    onRemove(): void {
         this.container.remove();
 
 
